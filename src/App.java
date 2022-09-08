@@ -5,23 +5,40 @@ import java.util.Random;
 public class App {
   public static void main(String[] args) {
     List<List<Integer>> randomNumberLists = arrayListOfRandomArrayList(5);
-    System.out.println("\n Generated arrayList of random valued arrayLists:");
+    System.out.println("\nGenerated arrayList of random valued arrayLists:");
     printList(randomNumberLists);
 
-    // Insert Sort
+    System.out.println("------------------------------------------------------");
+
+    // INSERT SORT
     System.out.println("\nINSERTION SORT ALGORITHM:");
     double insertionSortST = System.nanoTime();
-    List<List<Integer>> insertSortedList = insertionSortMethod(randomNumberLists, true);
+    List<List<Integer>> insertionList = deepCopy(randomNumberLists);
+    insertionSortMethod(insertionList, true);
     double insertionSortET = System.nanoTime();
     double insertionSortDurationNS = insertionSortET - insertionSortST;
     double insertionSortDurationMS = insertionSortDurationNS / 1000000;
     System.out.println("  Time Elapased:");
     System.out.println("    " + insertionSortDurationNS + " nanoseconds");
     System.out.println("    " + insertionSortDurationMS + " milliseconds");
-
-    // Sorted
     System.out.println("\nInsertion Sorted:");
-    printList(insertSortedList);
+    printList(insertionList);
+
+    System.out.println("------------------------------------------------------");
+
+    // MERGE SORT
+    System.out.println("\nMERGE SORT ALGORITHM:");
+    double mergeSortST = System.nanoTime();
+    List<List<Integer>> mergeSortedList = deepCopy(randomNumberLists);
+    mergeSortMethod(mergeSortedList);
+    double mergeSortET = System.nanoTime();
+    double mergeSortDurationNS = mergeSortET - mergeSortST;
+    double mergeSortDurationMS = mergeSortDurationNS / 1000000;
+    System.out.println("  Time Elapased:");
+    System.out.println("    " + mergeSortDurationNS + " nanoseconds");
+    System.out.println("    " + mergeSortDurationMS + " milliseconds");
+    System.out.println("\nMerge Sorted:");
+    printList(mergeSortedList);
   }
 
   // ~ NUMBER GENERATOR METHODS
@@ -65,6 +82,51 @@ public class App {
     return randomNumberLists;
   }
 
+  // MERGE SORT
+  private static List<List<Integer>> mergeSortMethod(List<List<Integer>> arrayList) {
+    for (int i = 0; i < arrayList.size(); i++)
+      arrayList.set(i, mergeSort(arrayList.get(i)));
+    return arrayList;
+  }
+
+  private static List<Integer> mergeSort(List<Integer> arrayList) {
+    if (arrayList.size() <= 1)
+      return arrayList;
+    List<Integer> left = new ArrayList<>();
+    List<Integer> right = new ArrayList<>();
+    int middle = arrayList.size() / 2;
+    for (int i = 0; i < middle; i++)
+      left.add(arrayList.get(i));
+    for (int i = middle; i < arrayList.size(); i++)
+      right.add(arrayList.get(i));
+    left = mergeSort(left);
+    right = mergeSort(right);
+    List<Integer> result = merge(left, right);
+    return result;
+  }
+
+  private static List<Integer> merge(List<Integer> left, List<Integer> right) {
+    List<Integer> result = new ArrayList<>();
+    while (!left.isEmpty() || !right.isEmpty()) {
+      if (!left.isEmpty() && !right.isEmpty()) {
+        if (left.get(0) <= right.get(0)) {
+          result.add(left.get(0));
+          left.remove(0);
+        } else {
+          result.add(right.get(0));
+          right.remove(0);
+        }
+      } else if (!left.isEmpty()) {
+        result.add(left.get(0));
+        left.remove(0);
+      } else if (!right.isEmpty()) {
+        result.add(right.get(0));
+        right.remove(0);
+      }
+    }
+    return result;
+  }
+
   // PRINT ELEMENTS IN HUMAN READABLE FORMAT
   private static void printList(List<List<Integer>> randomNumberLists) {
     int max = 0;
@@ -84,5 +146,16 @@ public class App {
       System.out.println(i == randomNumberLists.size() - 1 ? "}" : "},");
     }
     System.out.println("}");
+  }
+
+  // METHOD TO DEEP COPY ALL THE ELEMENTS OF AN ARRAYLIST TO ANOTHER
+  private static List<List<Integer>> deepCopy(List<List<Integer>> original) {
+    List<List<Integer>> copy = new ArrayList<>();
+    for (int i = 0; i < original.size(); i++) {
+      copy.add(new ArrayList<>());
+      for (int j = 0; j < original.get(i).size(); j++)
+        copy.get(i).add(original.get(i).get(j));
+    }
+    return copy;
   }
 }
