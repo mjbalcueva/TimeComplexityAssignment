@@ -1,12 +1,12 @@
 # Time Complexity Of Sorting Algorithms
 
-## Description
+## Description:
 
 This program demonstrates the time complexity of different sort algorithms
 
 ---
 
-## Given Instructions
+## Instructions:
 
 1. Create a method to generate list of random numbers named `randomNumbersArray()`
 1. Create a method to generate an array of the list generated from step 1 called `arrayOfRandomNumbersArray()`
