@@ -4,7 +4,7 @@ import java.util.Random;
 
 public class App {
   public static void main(String[] args) {
-    List<List<Integer>> randomNumberLists = arrayListOfRandomArrayList(5);
+    List<List<Integer>> randomNumberLists = arrayListOfRandomArrayList(5, 30);
     System.out.println("\nGenerated arrayList of random valued arrayLists:");
     printList(randomNumberLists);
 
@@ -16,10 +16,8 @@ public class App {
     List<List<Integer>> insertionList = deepCopy(randomNumberLists);
     insertionSortMethod(insertionList, false);
     double insertionSortET = System.nanoTime();
-    double insertionSortDurationNS = insertionSortET - insertionSortST;
-    double insertionSortDurationMS = insertionSortDurationNS / 1000000;
+    double insertionSortDurationMS = (insertionSortET - insertionSortST) / 1000000;
     System.out.println("  Time Elapased:");
-    System.out.println("    " + insertionSortDurationNS + " nanoseconds");
     System.out.println("    " + insertionSortDurationMS + " milliseconds");
     System.out.println("\nInsertion Sorted:");
     printList(insertionList);
@@ -32,13 +30,13 @@ public class App {
     List<List<Integer>> mergeSortedList = deepCopy(randomNumberLists);
     mergeSortMethod(mergeSortedList, false);
     double mergeSortET = System.nanoTime();
-    double mergeSortDurationNS = mergeSortET - mergeSortST;
-    double mergeSortDurationMS = mergeSortDurationNS / 1000000;
+    double mergeSortDurationMS = (mergeSortET - mergeSortST) / 1000000;
     System.out.println("  Time Elapased:");
-    System.out.println("    " + mergeSortDurationNS + " nanoseconds");
     System.out.println("    " + mergeSortDurationMS + " milliseconds");
     System.out.println("\nMerge Sorted:");
     printList(mergeSortedList);
+
+    System.out.println("------------------------------------------------------");
 
     // QUICK SORT
     System.out.println("\nQUICK SORT ALGORITHM:");
@@ -46,30 +44,31 @@ public class App {
     List<List<Integer>> quickSortedList = deepCopy(randomNumberLists);
     quickSortMethod(quickSortedList, true);
     double quickSortET = System.nanoTime();
-    double quickSortDurationNS = quickSortET - quickSortST;
-    double quickSortDurationMS = quickSortDurationNS / 1000000;
+    double quickSortDurationMS = (quickSortET - quickSortST) / 1000000;
     System.out.println("  Time Elapased:");
-    System.out.println("    " + quickSortDurationNS + " nanoseconds");
     System.out.println("    " + quickSortDurationMS + " milliseconds");
     System.out.println("\nQuick Sorted:");
     printList(quickSortedList);
   }
 
   // ~ NUMBER GENERATOR METHODS
-  // creates a random arrayList of integers of inputed range
-  private static List<Integer> randomArrayList(int range) {
+  private static List<Integer> randomArrayList(int range, int randomRange) {
     List<Integer> randomArrayList = new ArrayList<>();
     Random random = new Random();
-    for (int i = 0; i < range; i++)
-      randomArrayList.add(random.nextInt(range));
+    for (int i = 0; i < range; i++) {
+      int randomNumber = random.nextInt(randomRange);
+      while (randomArrayList.contains(randomNumber))
+        randomNumber = random.nextInt(randomRange);
+      randomArrayList.add(randomNumber);
+    }
     return randomArrayList;
   }
 
   // creates a an arraylist of generated random arraylists of inputed range
-  private static List<List<Integer>> arrayListOfRandomArrayList(int range) {
+  private static List<List<Integer>> arrayListOfRandomArrayList(int range, int randomRange) {
     List<List<Integer>> arrayListOfRandomArrayList = new ArrayList<>();
     for (int i = 0; i < range; i++)
-      arrayListOfRandomArrayList.add(randomArrayList(range));
+      arrayListOfRandomArrayList.add(randomArrayList(range, randomRange));
     return arrayListOfRandomArrayList;
   }
 
