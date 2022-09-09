@@ -39,6 +39,20 @@ public class App {
     System.out.println("    " + mergeSortDurationMS + " milliseconds");
     System.out.println("\nMerge Sorted:");
     printList(mergeSortedList);
+
+    // QUICK SORT
+    System.out.println("\nQUICK SORT ALGORITHM:");
+    double quickSortST = System.nanoTime();
+    List<List<Integer>> quickSortedList = deepCopy(randomNumberLists);
+    quickSortMethod(quickSortedList, true);
+    double quickSortET = System.nanoTime();
+    double quickSortDurationNS = quickSortET - quickSortST;
+    double quickSortDurationMS = quickSortDurationNS / 1000000;
+    System.out.println("  Time Elapased:");
+    System.out.println("    " + quickSortDurationNS + " nanoseconds");
+    System.out.println("    " + quickSortDurationMS + " milliseconds");
+    System.out.println("\nQuick Sorted:");
+    printList(quickSortedList);
   }
 
   // ~ NUMBER GENERATOR METHODS
@@ -142,6 +156,39 @@ public class App {
       }
     }
     return result;
+  }
+
+  // QUICK SORT
+  private static List<List<Integer>> quickSortMethod(List<List<Integer>> arrayList, boolean ascending) {
+    for (int i = 0; i < arrayList.size(); i++)
+      arrayList.set(i, quickSort(arrayList.get(i), ascending));
+    return arrayList;
+  }
+
+  private static List<Integer> quickSort(List<Integer> arrayList, boolean ascending) {
+    if (arrayList.size() <= 1)
+      return arrayList;
+    List<Integer> left = new ArrayList<>();
+    List<Integer> right = new ArrayList<>();
+    int pivot = arrayList.get(0);
+    for (int i = 1; i < arrayList.size(); i++) {
+      if (ascending) {
+        if (arrayList.get(i) <= pivot)
+          left.add(arrayList.get(i));
+        else
+          right.add(arrayList.get(i));
+      } else {
+        if (arrayList.get(i) >= pivot)
+          left.add(arrayList.get(i));
+        else
+          right.add(arrayList.get(i));
+      }
+    }
+    left = quickSort(left, ascending);
+    right = quickSort(right, ascending);
+    left.add(pivot);
+    left.addAll(right);
+    return left;
   }
 
   // PRINT ELEMENTS IN HUMAN READABLE FORMAT
