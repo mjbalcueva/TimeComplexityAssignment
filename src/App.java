@@ -14,7 +14,7 @@ public class App {
     System.out.println("\nINSERTION SORT ALGORITHM:");
     double insertionSortST = System.nanoTime();
     List<List<Integer>> insertionList = deepCopy(randomNumberLists);
-    insertionSortMethod(insertionList, true);
+    insertionSortMethod(insertionList, false);
     double insertionSortET = System.nanoTime();
     double insertionSortDurationNS = insertionSortET - insertionSortST;
     double insertionSortDurationMS = insertionSortDurationNS / 1000000;
@@ -30,7 +30,7 @@ public class App {
     System.out.println("\nMERGE SORT ALGORITHM:");
     double mergeSortST = System.nanoTime();
     List<List<Integer>> mergeSortedList = deepCopy(randomNumberLists);
-    mergeSortMethod(mergeSortedList);
+    mergeSortMethod(mergeSortedList, false);
     double mergeSortET = System.nanoTime();
     double mergeSortDurationNS = mergeSortET - mergeSortST;
     double mergeSortDurationMS = mergeSortDurationNS / 1000000;
@@ -83,13 +83,13 @@ public class App {
   }
 
   // MERGE SORT
-  private static List<List<Integer>> mergeSortMethod(List<List<Integer>> arrayList) {
+  private static List<List<Integer>> mergeSortMethod(List<List<Integer>> arrayList, boolean ascending) {
     for (int i = 0; i < arrayList.size(); i++)
-      arrayList.set(i, mergeSort(arrayList.get(i)));
+      arrayList.set(i, mergeSort(arrayList.get(i), ascending));
     return arrayList;
   }
 
-  private static List<Integer> mergeSort(List<Integer> arrayList) {
+  private static List<Integer> mergeSort(List<Integer> arrayList, boolean ascending) {
     if (arrayList.size() <= 1)
       return arrayList;
     List<Integer> left = new ArrayList<>();
@@ -99,29 +99,46 @@ public class App {
       left.add(arrayList.get(i));
     for (int i = middle; i < arrayList.size(); i++)
       right.add(arrayList.get(i));
-    left = mergeSort(left);
-    right = mergeSort(right);
-    List<Integer> result = merge(left, right);
-    return result;
+    left = mergeSort(left, ascending);
+    right = mergeSort(right, ascending);
+    return merge(left, right, ascending);
   }
 
-  private static List<Integer> merge(List<Integer> left, List<Integer> right) {
+  private static List<Integer> merge(List<Integer> left, List<Integer> right, boolean ascending) {
     List<Integer> result = new ArrayList<>();
     while (!left.isEmpty() || !right.isEmpty()) {
-      if (!left.isEmpty() && !right.isEmpty()) {
-        if (left.get(0) <= right.get(0)) {
+      if (ascending) {
+        if (!left.isEmpty() && !right.isEmpty()) {
+          if (left.get(0) <= right.get(0)) {
+            result.add(left.get(0));
+            left.remove(0);
+          } else {
+            result.add(right.get(0));
+            right.remove(0);
+          }
+        } else if (!left.isEmpty()) {
           result.add(left.get(0));
           left.remove(0);
-        } else {
+        } else if (!right.isEmpty()) {
           result.add(right.get(0));
           right.remove(0);
         }
-      } else if (!left.isEmpty()) {
-        result.add(left.get(0));
-        left.remove(0);
-      } else if (!right.isEmpty()) {
-        result.add(right.get(0));
-        right.remove(0);
+      } else {
+        if (!left.isEmpty() && !right.isEmpty()) {
+          if (left.get(0) >= right.get(0)) {
+            result.add(left.get(0));
+            left.remove(0);
+          } else {
+            result.add(right.get(0));
+            right.remove(0);
+          }
+        } else if (!left.isEmpty()) {
+          result.add(left.get(0));
+          left.remove(0);
+        } else if (!right.isEmpty()) {
+          result.add(right.get(0));
+          right.remove(0);
+        }
       }
     }
     return result;
