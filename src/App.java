@@ -79,16 +79,10 @@ public class App {
       for (int j = 1; j < randomNumberLists.get(i).size(); j++) {
         int key = randomNumberLists.get(i).get(j);
         int k = j - 1;
-        if (ascending)
-          while (k >= 0 && randomNumberLists.get(i).get(k) > key) {
-            randomNumberLists.get(i).set(k + 1, randomNumberLists.get(i).get(k));
-            k--;
-          }
-        else
-          while (k >= 0 && randomNumberLists.get(i).get(k) < key) {
-            randomNumberLists.get(i).set(k + 1, randomNumberLists.get(i).get(k));
-            k--;
-          }
+        while (k >= 0 && (ascending ? randomNumberLists.get(i).get(k) > key : randomNumberLists.get(i).get(k) < key)) {
+          randomNumberLists.get(i).set(k + 1, randomNumberLists.get(i).get(k));
+          k--;
+        }
         randomNumberLists.get(i).set(k + 1, key);
       }
     }
@@ -120,38 +114,22 @@ public class App {
   private static List<Integer> merge(List<Integer> left, List<Integer> right, boolean ascending) {
     List<Integer> result = new ArrayList<>();
     while (!left.isEmpty() || !right.isEmpty()) {
-      if (ascending) {
-        if (!left.isEmpty() && !right.isEmpty()) {
-          if (left.get(0) <= right.get(0)) {
-            result.add(left.get(0));
-            left.remove(0);
-          } else {
-            result.add(right.get(0));
-            right.remove(0);
-          }
-        } else if (!left.isEmpty()) {
+      if (!left.isEmpty() && !right.isEmpty()) {
+        boolean sortAscending = left.get(0) <= right.get(0);
+        boolean sortDescending = left.get(0) >= right.get(0);
+        if ((ascending) ? sortAscending : sortDescending) {
           result.add(left.get(0));
           left.remove(0);
-        } else if (!right.isEmpty()) {
+        } else {
           result.add(right.get(0));
           right.remove(0);
         }
-      } else {
-        if (!left.isEmpty() && !right.isEmpty()) {
-          if (left.get(0) >= right.get(0)) {
-            result.add(left.get(0));
-            left.remove(0);
-          } else {
-            result.add(right.get(0));
-            right.remove(0);
-          }
-        } else if (!left.isEmpty()) {
-          result.add(left.get(0));
-          left.remove(0);
-        } else if (!right.isEmpty()) {
-          result.add(right.get(0));
-          right.remove(0);
-        }
+      } else if (!left.isEmpty()) {
+        result.add(left.get(0));
+        left.remove(0);
+      } else if (!right.isEmpty()) {
+        result.add(right.get(0));
+        right.remove(0);
       }
     }
     return result;
@@ -170,19 +148,11 @@ public class App {
     List<Integer> left = new ArrayList<>();
     List<Integer> right = new ArrayList<>();
     int pivot = arrayList.get(0);
-    for (int i = 1; i < arrayList.size(); i++) {
-      if (ascending) {
-        if (arrayList.get(i) <= pivot)
-          left.add(arrayList.get(i));
-        else
-          right.add(arrayList.get(i));
-      } else {
-        if (arrayList.get(i) >= pivot)
-          left.add(arrayList.get(i));
-        else
-          right.add(arrayList.get(i));
-      }
-    }
+    for (int i = 1; i < arrayList.size(); i++)
+      if (ascending ? arrayList.get(i) <= pivot : arrayList.get(i) >= pivot)
+        left.add(arrayList.get(i));
+      else
+        right.add(arrayList.get(i));
     left = quickSort(left, ascending);
     right = quickSort(right, ascending);
     left.add(pivot);
